@@ -37,16 +37,17 @@ public class BehaviorBuilder
             result = new KineticSequence(new BehaviorTree[] {
                                         //new MoveToPlayer(10);
                                         new Sequence(new BehaviorTree[] {
-                                            new NearbyEnemiesQuery(2, 5, true), //if alone
-                                            new GoTowardsNearestEnemy(1, 1, false), //look for friends
-                                            new PlayerDistanceQuery(14, true), //if alone and the player is too close
-                                            new GoTowards(GameManager.Instance.player.transform, 1, .05f, true), //run
+                                            new GoTo(AIWaypointManager.Instance.GetClosestByType(agent.transform.position,0).transform,0.1f)
+                                            // new NearbyEnemiesQuery(2, 5, true), //if alone
+                                            // new GoTowardsNearestEnemy(1, 1, false), //look for friends
+                                            // new PlayerDistanceQuery(14, true), //if alone and the player is too close
+                                            // new GoTowards(GameManager.Instance.player.transform, 1, .05f, true), //run
                                         }),
-                                        new Sequence(new BehaviorTree[] {
-                                            new NearbyEnemiesQuery(5, 5, false), //if not alone
-                                            new MoveToPlayer(agent.GetAction("attack").range),//charge!
-                                            new Attack()
-                                        }),
+                                        // new Sequence(new BehaviorTree[] {
+                                        //     new NearbyEnemiesQuery(5, 5, false), //if not alone
+                                        //     new MoveToPlayer(agent.GetAction("attack").range),//charge!
+                                        //     new Attack()
+                                        // }),
 
                                      });
         }
