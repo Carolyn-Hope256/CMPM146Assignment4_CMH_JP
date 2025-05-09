@@ -8,9 +8,17 @@ public class GoTowards : BehaviorTree
     bool backstep;
     bool in_progress;
     Vector3 start_point;
-
+    float startTime;
     public override Result Run()
     {
+
+        if(Time.time - startTime > 5)
+        {
+            Debug.Log("Stuck, exiting move");
+            return Result.SUCCESS;
+        }
+
+
         if (!in_progress)
         {
             in_progress = true;
@@ -43,6 +51,8 @@ public class GoTowards : BehaviorTree
         this.distance = distance;
         this.backstep = back;
         this.in_progress = false;
+        this.startTime = Time.time;
+        
     }
 
     public override BehaviorTree Copy()

@@ -4,7 +4,7 @@ public class Heal : BehaviorTree
 {
     public override Result Run()
     {
-        var target = GameManager.Instance.GetClosestOtherEnemy(agent.gameObject);
+        var target = GameManager.Instance.GetBestHealTarget(agent.gameObject);
         EnemyAction act = agent.GetAction("heal");
         if (act == null || target == null) return Result.FAILURE;
 

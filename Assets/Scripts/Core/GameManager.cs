@@ -60,12 +60,37 @@ public class GameManager
         if (enemies == null || enemies.Count < 2) return null;
         return enemies.FindAll((a) => a != self).Aggregate((a, b) => (a.transform.position - point).sqrMagnitude < (b.transform.position - point).sqrMagnitude ? a : b);
     }
-
+    
     public GameObject GetClosestOfType(GameObject self, string type)
     {
         Vector3 point = self.transform.position;
         if (enemies == null || enemies.Count < 2) return null;
         return enemies.FindAll((a) => a != self && a.GetComponent<EnemyController>().monster == type).Aggregate((a, b) => (a.transform.position - point).sqrMagnitude < (b.transform.position - point).sqrMagnitude ? a : b);
+    }
+
+    public GameObject GetBestHealTarget(GameObject self)
+    {
+        Vector3 point = self.transform.position;
+        EnemyController powers = self.GetComponent<EnemyController>();
+        EnemyAction healing = powers.actions["heal"];
+
+        if (healing == null) 
+        {
+            Debug.Log("Agent does not have healing powers");
+            return null; 
+        }
+
+        if (enemies == null || enemies.Count < 2) return null;
+
+        List<GameObject> Candidates = enemies.FindAll((a) => a != self &&
+        a.GetComponent<EnemyController>().monster != "warlock" &&
+        (a.transform.position - point).magnitude < healing.range &&
+        (a.GetComponent<EnemyController>().hp.max_hp - a.GetComponent<EnemyController>().hp.hp) > 5);
+
+        if (Candidates.Count < 1) return null;
+        return Candidates.Aggregate((a, b) => 
+        (a.GetComponent<EnemyController>().hp.max_hp - a.GetComponent<EnemyController>().hp.hp) > 
+        (b.GetComponent<EnemyController>().hp.max_hp - b.GetComponent<EnemyController>().hp.hp) ? a : b);
     }
 
     public List<GameObject> GetEnemiesInRange(Vector3 point, float distance)

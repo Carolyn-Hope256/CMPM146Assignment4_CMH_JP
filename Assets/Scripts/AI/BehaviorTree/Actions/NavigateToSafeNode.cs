@@ -3,6 +3,7 @@ using System.Linq;
 using NUnit.Framework.Constraints;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class NavigateToSafeNode : BehaviorTree
 {
@@ -12,10 +13,17 @@ public class NavigateToSafeNode : BehaviorTree
     bool in_progress;
     Vector3 start_point;
     AIWaypoint currentWaypoint;
-
+    float startTime;
     public override Result Run()
     {
-       
+
+        if (Time.time - startTime > 5)
+        {
+            Debug.Log("Stuck, exiting move");
+            startTime = Time.time;
+            return Result.SUCCESS;
+        }
+
         if (!in_progress)
         {
             in_progress = true;
@@ -30,12 +38,12 @@ public class NavigateToSafeNode : BehaviorTree
         if (currentWaypoint == null){
             target = AIWaypointManager.Instance.GetClosest(start_point).transform;
         }else{
-            var waypoint = AIWaypointManager.Instance.  get_direction_to_safest_waypoint(currentWaypoint);
+            var waypoint = AIWaypointManager.Instance.get_direction_to_safest_waypoint(currentWaypoint);
             if (waypoint == null){
                 agent.GetComponent<Unit>().movement = new Vector2(0, 0);
                 in_progress = false;
-                
-                return Result.SUCCESS;
+                startTime = Time.time;
+                return Result.SUCCESS;  
             }
             target = waypoint.transform;
         }
@@ -54,7 +62,9 @@ public class NavigateToSafeNode : BehaviorTree
             if (direction.magnitude < arrived_distance){
                 currentWaypoint = AIWaypointManager.Instance.GetClosest(start_point);
             }
+            startTime = Time.time;
             return Result.SUCCESS;
+            
         }
         else
         {
@@ -70,6 +80,7 @@ public class NavigateToSafeNode : BehaviorTree
         this.distance = distance;
         this.in_progress = false;
         this.currentWaypoint = null;
+        this.startTime = Time.time;
     }
 
     public override BehaviorTree Copy()
