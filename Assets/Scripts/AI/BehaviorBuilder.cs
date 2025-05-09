@@ -19,10 +19,10 @@ public class BehaviorBuilder
 
                                         }),
 
-                                        new PermaBuff(),
-                                        new Heal(),
-                                        new Buff(),
-                                        new Attack()
+                                        // new PermaBuff(),
+                                        // new Heal(),
+                                        // new Buff(),
+                                        // new Attack()
                                      });
         }
         /*else if (agent.monster == "zombie")
@@ -55,8 +55,9 @@ public class BehaviorBuilder
         else
         {
             result = new Sequence(new BehaviorTree[] {
-                                       new MoveToPlayer(agent.GetAction("attack").range),
-                                       new Attack()
+                                    new NavigateToSafeNode( agent.transform.position, 1, 1f)
+                                    //    new MoveToPlayer(agent.GetAction("attack").range),
+                                    //    new Attack()
                                      });
         }
 

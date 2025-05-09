@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework.Constraints;
 
 
 public class AIWaypointManager
@@ -44,5 +45,17 @@ public class AIWaypointManager
     {
         if (waypoints.Count <= i) return null;
         return waypoints[i];
+    }
+    public AIWaypoint get_safest_waypoint(){
+        var max = 0f;
+        var index = -1;
+        for (var i = 0; i < waypoints.Count; i++){
+            var temp = (waypoints[i].transform.position - GameManager.Instance.player.transform.position).magnitude;
+            if(temp > max){
+                max = temp;
+                index = i;
+            }
+        }
+        return waypoints[index];
     }
 }
