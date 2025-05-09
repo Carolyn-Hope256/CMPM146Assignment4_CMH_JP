@@ -61,6 +61,13 @@ public class GameManager
         return enemies.FindAll((a) => a != self).Aggregate((a, b) => (a.transform.position - point).sqrMagnitude < (b.transform.position - point).sqrMagnitude ? a : b);
     }
 
+    public GameObject GetClosestOtherEnemyOfType(GameObject self, string type)
+    {
+        Vector3 point = self.transform.position;
+        if (enemies == null || enemies.Count < 2) return null;
+        return enemies.FindAll((a) => a != self && a.GetComponent<EnemyController>().monster == type).Aggregate((a, b) => (a.transform.position - point).sqrMagnitude < (b.transform.position - point).sqrMagnitude ? a : b);
+    }
+
     public List<GameObject> GetEnemiesInRange(Vector3 point, float distance)
     {
         if (enemies == null || enemies.Count == 0) return null;
