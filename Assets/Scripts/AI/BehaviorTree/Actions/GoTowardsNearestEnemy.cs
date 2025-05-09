@@ -7,12 +7,20 @@ public class GoTowardsNearestEnemy : BehaviorTree
     float arrived_distance;
     float distance;
     bool backstep;
+    string filter;
     bool in_progress;
     Vector3 start_point;
 
     public override Result Run()
     {
+        //var t;
         var t = GameManager.Instance.GetClosestOtherEnemy(agent.gameObject);
+        if (filter != null)
+        {
+            t = GameManager.Instance.GetClosestOfType(agent.gameObject, filter);
+        }
+        
+
         if(this.target == null && t != null)
         {
             this.target = t.transform;
@@ -70,6 +78,16 @@ public class GoTowardsNearestEnemy : BehaviorTree
         { 
             this.target = t;
         }*/
+    }
+
+    public GoTowardsNearestEnemy(float distance, float arrived_distance, bool back, string type) : base()
+    {
+        this.arrived_distance = arrived_distance;
+        this.distance = distance;
+        this.backstep = back;
+        this.filter = type;
+        this.in_progress = false;
+        
     }
 
     public override BehaviorTree Copy()

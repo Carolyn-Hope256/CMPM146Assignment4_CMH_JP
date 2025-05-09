@@ -1,4 +1,6 @@
+using Unity.VisualScripting;
 using UnityEngine;
+using System.Globalization;
 
 public class BehaviorBuilder
 {
@@ -8,15 +10,13 @@ public class BehaviorBuilder
         if (agent.monster == "warlock")
         {
             result = new KineticSequence(new BehaviorTree[] {
-                                        //new MoveToPlayer(10),
+                                        
                                         new Sequence(new BehaviorTree[] {
-                                            new PlayerDistanceQuery(18, false),
-                                            new GoTowards(GameManager.Instance.player.transform, 1, .05f, false)
-                                        }),
+                                            new NearbyEnemiesQuery(2, 30, false),//If there are any friends in the general area
+                                            new GoTowardsNearestEnemy(1, 2, false, "zombie"),//meet up with them
+                                            new MeatShieldQuery(false),//if warlock is closer to the player than their friend is
+                                            new GoTowards(GameManager.Instance.player.transform, 1, 0.5f, true)//move away from player
 
-                                        new Sequence(new BehaviorTree[] {
-                                            new PlayerDistanceQuery(16, true),
-                                            new GoTowards(GameManager.Instance.player.transform, 1, .05f, true)
                                         }),
 
                                         new PermaBuff(),

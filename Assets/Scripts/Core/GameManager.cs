@@ -61,7 +61,7 @@ public class GameManager
         return enemies.FindAll((a) => a != self).Aggregate((a, b) => (a.transform.position - point).sqrMagnitude < (b.transform.position - point).sqrMagnitude ? a : b);
     }
 
-    public GameObject GetClosestOtherEnemyOfType(GameObject self, string type)
+    public GameObject GetClosestOfType(GameObject self, string type)
     {
         Vector3 point = self.transform.position;
         if (enemies == null || enemies.Count < 2) return null;
