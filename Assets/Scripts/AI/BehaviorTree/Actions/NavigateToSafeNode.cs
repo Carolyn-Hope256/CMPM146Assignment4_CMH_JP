@@ -15,11 +15,16 @@ public class NavigateToSafeNode : BehaviorTree
 
     public override Result Run()
     {
+       
         if (!in_progress)
         {
             in_progress = true;
             start_point = agent.transform.position;
         }
+         if((start_point - GameManager.Instance.player.transform.position).magnitude > 30){
+            return Result.SUCCESS;
+        }
+        
         if (currentWaypoint == null){
             //move in direction of nearest waypoint
             if (target == null){
