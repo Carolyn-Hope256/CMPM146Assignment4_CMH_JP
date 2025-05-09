@@ -36,6 +36,9 @@ public class GameManager
     public RelicIconManager relicIconManager;
 
     private List<GameObject> enemies;
+
+    public Dictionary<int, bool> AttackGroup = new Dictionary<int, bool>();
+
     public int enemy_count { get { return enemies.Count; } }
 
     public void AddEnemy(GameObject enemy)
@@ -93,10 +96,54 @@ public class GameManager
         (b.GetComponent<EnemyController>().hp.max_hp - b.GetComponent<EnemyController>().hp.hp) ? a : b);
     }
 
-    public List<GameObject> GetEnemiesInRange(Vector3 point, float distance)
+    public GameObject GetPBuffTarget(GameObject self)
     {
-        if (enemies == null || enemies.Count == 0) return null;
+        Vector3 point = self.transform.position;
+        EnemyController powers = self.GetComponent<EnemyController>();
+        EnemyAction buff = powers.actions["permabuff"];
+
+        if (buff == null)
+        {
+            Debug.Log("Agent does not have permabuff powers");
+            return null;
+        }
+
+        if (enemies == null || enemies.Count < 2) return null;
+
+        List<GameObject> Candidates = enemies.FindAll((a) => a != self &&
+        a.GetComponent<EnemyController>().monster == "skeleton" &&
+        (a.transform.position - point).magnitude < buff.range);
+
+        if (Candidates.Count < 1) return null;
+        return Candidates.Aggregate((a, b) =>
+        (a.GetComponent<EnemyController>().hp.hp) >
+        (b.GetComponent<EnemyController>().hp.hp) ? a : b);
+    }
+
+    /*public List<GameObject> GetEnemiesInRange(Vector3 point, float distance)
+    {
+        if (enemies == null || enemies.Count == 0) { Debug.Log("Enemies is null or empty!"); return null; }
+        Debug.Log("Enemies is not null nor empty!");
         return enemies.FindAll((a) => (a.transform.position - point).magnitude <= distance);
+    }*/
+    public List<GameObject> GetEnemiesInRange(Vector3 point, float distance, string ?type = null, bool rallied = false)
+    {
+        if (enemies == null || enemies.Count == 0){ Debug.Log("Enemies is null or empty!"); return null; }
+        Debug.Log("Enemies is not null nor empty!");
+
+        List<GameObject> valid = enemies.FindAll((a) => (a.transform.position - point).magnitude <= distance);
+
+        if(type != null)
+        {
+            valid = valid.FindAll((a) => a.GetComponent<EnemyController>().monster == type);
+        }
+
+        if (rallied)
+        {
+            valid = valid.FindAll((a) => AttackGroup.ContainsKey(a.GetInstanceID()));
+        }
+
+        return valid;
     }
 
     private GameManager()

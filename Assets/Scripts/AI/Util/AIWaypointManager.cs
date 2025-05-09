@@ -58,9 +58,9 @@ public class AIWaypointManager
         // }
         
         var safestwaypoint = GetClosestByType(waypoint.transform.position, 0);//waypoints[index];
-        Debug.Log("Looking for direction to waypoint " + safestwaypoint.gameObject.name + ", currently at waypoint " + waypoint.gameObject.name);
+        //Debug.Log("Looking for direction to waypoint " + safestwaypoint.gameObject.name + ", currently at waypoint " + waypoint.gameObject.name);
         if (safestwaypoint == waypoint){
-            Debug.Log("Arrived at safest waypoint!");
+            //Debug.Log("Arrived at safest waypoint!");
             return null;
         }
         var num = 0f;

@@ -10,7 +10,7 @@ public class GoTowardsNearestEnemy : BehaviorTree
     string filter;
     bool in_progress;
     Vector3 start_point;
-
+    float time;
     public override Result Run()
     {
         //var t;
@@ -19,14 +19,21 @@ public class GoTowardsNearestEnemy : BehaviorTree
         {
             t = GameManager.Instance.GetClosestOfType(agent.gameObject, filter);
         }
-        
 
-        if(this.target == null && t != null)
+        if (Time.time - time > 5)
+        {
+            Debug.Log("Stuck, exiting move");
+            time = Time.time;
+            return Result.SUCCESS;
+        }
+
+        if (this.target == null && t != null)
         {
             this.target = t.transform;
         }
         if (target == null)
         {
+            time = Time.time;
             return Result.FAILURE;
         }
         if (!in_progress)
@@ -45,6 +52,7 @@ public class GoTowardsNearestEnemy : BehaviorTree
         {
             agent.GetComponent<Unit>().movement = new Vector2(0, 0);
             in_progress = false;
+            time = Time.time;
             return Result.SUCCESS;
         }
         else
@@ -60,24 +68,7 @@ public class GoTowardsNearestEnemy : BehaviorTree
         this.distance = distance;
         this.backstep = back;
         this.in_progress = false;
-
-        /*var nearby = GameManager.Instance.GetEnemiesInRange(agent.transform.position, 50);
-        float closest = 51;
-        float dis;
-        for (int e = 0; e < nearby.Count; e++) {
-            dis = (nearby[e].transform.position - agent.transform.position).magnitude;
-            if (dis < closest)
-            {
-                this.target = nearby[e].transform;
-                closest = dis;
-            }
-        }*/
-
-        
-        /*if (t != null)
-        { 
-            this.target = t;
-        }*/
+        this.time = Time.time;
     }
 
     public GoTowardsNearestEnemy(float distance, float arrived_distance, bool back, string type) : base()
@@ -85,8 +76,10 @@ public class GoTowardsNearestEnemy : BehaviorTree
         this.arrived_distance = arrived_distance;
         this.distance = distance;
         this.backstep = back;
-        this.filter = type;
         this.in_progress = false;
+        this.time = Time.time;
+        this.filter = type;
+        
         
     }
 

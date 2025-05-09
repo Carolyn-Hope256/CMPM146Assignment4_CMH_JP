@@ -5,7 +5,7 @@ public class PermaBuff : BehaviorTree
 {
     public override Result Run()
     {
-        var target = GameManager.Instance.GetClosestOtherEnemy(agent.gameObject);
+        var target = GameManager.Instance.GetPBuffTarget(agent.gameObject);
         if (target != null)
         {
             Debug.Log("Found buff target " +  target.name);

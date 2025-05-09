@@ -15,6 +15,7 @@ public class GoTowards : BehaviorTree
         if(Time.time - startTime > 5)
         {
             Debug.Log("Stuck, exiting move");
+            startTime = Time.time;
             return Result.SUCCESS;
         }
 
@@ -35,6 +36,7 @@ public class GoTowards : BehaviorTree
         {
             agent.GetComponent<Unit>().movement = new Vector2(0, 0);
             in_progress = false;
+            startTime = Time.time;
             return Result.SUCCESS;
         }
         else
