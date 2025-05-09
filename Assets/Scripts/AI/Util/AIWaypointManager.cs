@@ -46,16 +46,46 @@ public class AIWaypointManager
         if (waypoints.Count <= i) return null;
         return waypoints[i];
     }
-    public AIWaypoint get_safest_waypoint(){
-        var max = 0f;
-        var index = -1;
-        for (var i = 0; i < waypoints.Count; i++){
-            var temp = (waypoints[i].transform.position - GameManager.Instance.player.transform.position).magnitude;
-            if(temp > max){
-                max = temp;
-                index = i;
-            }
+    public AIWaypoint get_direction_to_safest_waypoint(AIWaypoint waypoint){
+        // var max = 0f;
+        // var index = -1;
+        // for (var i = 0; i < waypoints.Count; i++){
+        //     var temp = (waypoints[i].transform.position - GameManager.Instance.player.transform.position).magnitude;
+        //     if(temp > max){
+        //         max = temp;
+        //         index = i;
+        //     }
+        // }
+        var safestwaypoint = GetClosestByType(waypoint.transform.position, 0);//waypoints[index];
+        if (safestwaypoint == waypoint){
+            return null;
         }
-        return waypoints[index];
+        var num = 0f;
+        var tempwaypoint = waypoint;
+        while(tempwaypoint != safestwaypoint){
+            num += (tempwaypoint.transform.position - tempwaypoint.adjacentWaypoints[1].transform.position).magnitude;
+            tempwaypoint = tempwaypoint.adjacentWaypoints[1];
+            // if ((tempwaypoint.transform.position - GameManager.Instance.player.transform.position).magnitude < 30){
+            //     return waypoint.adjacentWaypoints[0];
+            // }
+        }
+        var num2 = 0f;
+        tempwaypoint = waypoint;
+        while(tempwaypoint != safestwaypoint){
+            num2 += (tempwaypoint.transform.position - tempwaypoint.adjacentWaypoints[0].transform.position).magnitude;
+            tempwaypoint = tempwaypoint.adjacentWaypoints[0];
+            // if ((tempwaypoint.transform.position - GameManager.Instance.player.transform.position).magnitude < 30){
+            //     return waypoint.adjacentWaypoints[1];
+            // }
+            
+        }
+
+        if (num < num2){
+            //go clockwise
+            return waypoint.adjacentWaypoints[1];
+        }else{
+            //go counter clockwise
+            return waypoint.adjacentWaypoints[0];
+        }
     }
 }
